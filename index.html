@@ -136,7 +136,6 @@ input{
 
 <script>
 const musica=document.getElementById("musica");
-document.body.addEventListener("click",()=>musica.play(),{once:true});
 
 let historico=[];
 let selecao=[];
@@ -168,7 +167,11 @@ function inicio(){
   historico=[];
   const b=document.createElement("button");
   b.innerText="iniciar";
-  b.onclick=modos;
+
+  b.onclick=()=>{
+    musica.play(); // começa a música no clique real
+    modos();
+  };
 
   render(`Bem-vinda ao jogo do planejamento.<br><br>Primeira missão: <b>selecione o seu modo</b>.`,b);
 }
