@@ -17,7 +17,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 
 body{
-  font-family:Segoe UI, sans-serif;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background:linear-gradient(rgba(10,15,30,.85),rgba(10,15,30,.85)), url('foto.jpg') center/cover no-repeat fixed;
   height:100vh;
   display:flex;
@@ -111,7 +111,7 @@ input{
   margin-top:22px;
 }
 
-/* RESPONSIVO PERFEITO */
+/* RESPONSIVO */
 @media (max-width:768px){
   .ui{padding:22px;height:95vh;overflow:auto}
   .grid,.area{grid-template-columns:1fr}
@@ -125,7 +125,7 @@ input{
 
 <body>
 
-<audio id="musica" src="musica.mp3" loop></audio>
+<audio id="musica" src="./musica.mp3" preload="auto" loop></audio>
 
 <div class="ui">
   <h1>Jogo das Escolhas</h1>
@@ -135,121 +135,124 @@ input{
 </div>
 
 <script>
-const musica=document.getElementById("musica");
+const musica = document.getElementById("musica");
+const texto = document.getElementById("texto");
+const conteudo = document.getElementById("conteudo");
 
-let historico=[];
-let selecao=[];
+let historico = [];
+let selecao = [];
 
-function render(txt,node,footer=false){
-  texto.innerHTML=txt;
-  conteudo.innerHTML="";
+function render(txt, node, footer = false) {
+  texto.innerHTML = txt;
+  conteudo.innerHTML = "";
   conteudo.appendChild(node);
 
-  if(footer){
-    const f=document.createElement("div");
-    f.className="footer";
+  if (footer) {
+    const f = document.createElement("div");
+    f.className = "footer";
 
-    const back=document.createElement("button");
-    back.innerText="voltar";
-    back.className="secondary";
-    back.onclick=()=>historico.pop()();
+    const back = document.createElement("button");
+    back.innerText = "voltar";
+    back.className = "secondary";
+    back.onclick = () => historico.pop()();
 
-    const concluir=document.createElement("button");
-    concluir.innerText="concluir escolhas";
-    concluir.onclick=finalizar;
+    const concluir = document.createElement("button");
+    concluir.innerText = "concluir escolhas";
+    concluir.onclick = finalizar;
 
-    f.append(back,concluir);
+    f.append(back, concluir);
     conteudo.appendChild(f);
   }
 }
 
-function inicio(){
-  historico=[];
-  const b=document.createElement("button");
-  b.innerText="iniciar";
+function inicio() {
+  historico = [];
+  const b = document.createElement("button");
+  b.innerText = "CLIQUE PARA INICIAR ❤️";
 
-  b.onclick=()=>{
-    musica.play(); // começa a música no clique real
+  b.onclick = () => {
+    // Tenta tocar a música. O navegador libera após este clique.
+    musica.play().catch(e => console.log("Áudio bloqueado ou não encontrado:", e));
     modos();
   };
 
-  render(`Bem-vinda ao jogo do planejamento.<br><br>Primeira missão: <b>selecione o seu modo</b>.`,b);
+  render(`Bem-vinda ao seu planejamento de quarta-feira.<br><br>Preparei algo especial. <b>Selecione o seu modo</b> para começarmos.`, b);
 }
 
-function modos(){
+function modos() {
   historico.push(inicio);
 
-  const wrap=document.createElement("div");
-  const grid=document.createElement("div");
-  grid.className="grid";
+  const wrap = document.createElement("div");
+  const grid = document.createElement("div");
+  grid.className = "grid";
 
-  ["modo dengo","modo saidinha"].forEach((t,i)=>{
-    const b=document.createElement("button");
-    b.innerText=t;
-    b.onclick=i?saida:dengo;
+  ["modo dengo", "modo saidinha"].forEach((t, i) => {
+    const b = document.createElement("button");
+    b.innerText = t;
+    b.onclick = i ? saida : dengo;
     grid.appendChild(b);
   });
 
-  const ambos=document.createElement("button");
-  ambos.innerText="ambos";
-  ambos.style.width="50%";
-  ambos.onclick=ambosModo;
+  const ambos = document.createElement("button");
+  ambos.innerText = "ambos";
+  ambos.style.width = "50%";
+  ambos.onclick = ambosModo;
 
-  const c=document.createElement("div");
-  c.className="center";
+  const c = document.createElement("div");
+  c.className = "center";
   c.appendChild(ambos);
 
-  wrap.append(grid,c);
-  render("Selecione o seu modo:",wrap);
+  wrap.append(grid, c);
+  render("Selecione o seu modo:", wrap);
 }
 
-function montar(titulo,op){
-  selecao=[];
+function montar(titulo, op) {
+  selecao = [];
   historico.push(modos);
 
-  const area=document.createElement("div");
-  area.className="area";
+  const area = document.createElement("div");
+  area.className = "area";
 
-  const grid=document.createElement("div");
-  grid.className="grid";
+  const grid = document.createElement("div");
+  grid.className = "grid";
 
-  const box=document.createElement("div");
-  box.className="lista";
+  const box = document.createElement("div");
+  box.className = "lista";
 
-  function att(){
-    box.innerHTML="<b>ordem escolhida:</b><br><br>"+
-    (selecao.length?selecao.map((s,i)=>`${i+1}. ${s}`).join("<br>"):"nenhuma ainda.");
+  function att() {
+    box.innerHTML = "<b>ordem escolhida:</b><br><br>" +
+    (selecao.length ? selecao.map((s, i) => `${i + 1}. ${s}`).join("<br>") : "nenhuma ainda.");
   }
 
-  op.forEach(o=>{
-    const b=document.createElement("button");
-    b.innerText=o;
-    b.onclick=()=>{selecao.push(o);att();}
+  op.forEach(o => {
+    const b = document.createElement("button");
+    b.innerText = o;
+    b.onclick = () => { selecao.push(o); att(); }
     grid.appendChild(b);
   });
 
-  const row=document.createElement("div");
-  row.className="input-row";
+  const row = document.createElement("div");
+  row.className = "input-row";
 
-  const inp=document.createElement("input");
-  inp.placeholder="digite outra opção";
+  const inp = document.createElement("input");
+  inp.placeholder = "digite outra opção";
 
-  const add=document.createElement("button");
-  add.innerText="adicionar";
-  add.onclick=()=>{if(inp.value){selecao.push(inp.value);inp.value="";att();}}
+  const add = document.createElement("button");
+  add.innerText = "adicionar";
+  add.onclick = () => { if (inp.value) { selecao.push(inp.value); inp.value = ""; att(); } }
 
-  row.append(inp,add);
-  area.append(grid,box);
+  row.append(inp, add);
+  area.append(grid, box);
 
-  const wrap=document.createElement("div");
-  wrap.append(area,row);
+  const wrap = document.createElement("div");
+  wrap.append(area, row);
 
   att();
-  render(titulo,wrap,true);
+  render(titulo, wrap, true);
 }
 
-function dengo(){
-  montar("dengo detectado. defina a rota.",[
+function dengo() {
+  montar("dengo detectado. defina a rota.", [
     "filminho / série e carinho",
     "autocuidados",
     "massagem",
@@ -257,8 +260,8 @@ function dengo(){
   ]);
 }
 
-function saida(){
-  montar("energia detectada. defina a rota.",[
+function saida() {
+  montar("energia detectada. defina a rota.", [
     "sair para comer",
     "boliche",
     "parque",
@@ -266,8 +269,8 @@ function saida(){
   ]);
 }
 
-function ambosModo(){
-  montar("monte a quarta-feira completa.",[
+function ambosModo() {
+  montar("monte a quarta-feira completa.", [
     "filminho / série e carinho",
     "autocuidados",
     "massagem",
@@ -279,39 +282,40 @@ function ambosModo(){
   ]);
 }
 
-function finalizar(){
-  const box=document.createElement("div");
-  box.className="lista";
+function finalizar() {
+  const box = document.createElement("div");
+  box.className = "lista";
 
-  box.innerHTML="<b>escolhas de quarta-feira selecionadas:</b><br><br>"+
-  selecao.map((s,i)=>`${i+1}. ${s}`).join("<br>");
+  box.innerHTML = "<b>escolhas de quarta-feira selecionadas:</b><br><br>" +
+  selecao.map((s, i) => `${i + 1}. ${s}`).join("<br>");
 
-  const f=document.createElement("div");
-  f.className="footer";
+  const f = document.createElement("div");
+  f.className = "footer";
 
-  const voltar=document.createElement("button");
-  voltar.innerText="voltar e alterar";
-  voltar.className="secondary";
-  voltar.onclick=()=>historico.pop()();
+  const voltar = document.createElement("button");
+  voltar.innerText = "voltar e alterar";
+  voltar.className = "secondary";
+  voltar.onclick = () => historico.pop()();
 
-  const zap=document.createElement("button");
-  zap.innerText="enviar no whatsapp";
-  zap.onclick=enviarWhats;
+  const zap = document.createElement("button");
+  zap.innerText = "enviar no whatsapp";
+  zap.onclick = enviarWhats;
 
-  f.append(voltar,zap);
+  f.append(voltar, zap);
   box.appendChild(f);
 
-  render("planejamento definido.",box);
+  render("planejamento definido.", box);
 }
 
-function enviarWhats(){
-  const numero="5511944441812";
-  let msg="rota de quarta-feira:\n\n";
-  selecao.forEach((s,i)=>msg+=`${i+1}. ${s}\n`);
-  msg+="\namo voce, meu bem.";
+function enviarWhats() {
+  const numero = "5511944441812";
+  let msg = "rota de quarta-feira:\n\n";
+  selecao.forEach((s, i) => msg += `${i + 1}. ${s}\n`);
+  msg += "\namo voce, meu bem.";
   window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msg)}`);
 }
 
+// Inicia o jogo
 inicio();
 </script>
 </body>
